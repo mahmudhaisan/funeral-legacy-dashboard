@@ -1,21 +1,33 @@
-.product-input-qty-options {
-    margin-top: -40px;
+
+.single-legacy-funeral-content{
+    background:  #2a3da3;
+    color: white;
 }
 
 
-.checkout-footer-sticky{
-    position: sticky !important;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 99999;
+.single-legacy-funeral-content .hero-image {
+    max-height: 600px !important; /* Adjust the maximum height of the image */
+    width: 100%;
+    object-fit: cover; /* Maintain aspect ratio */
+    margin: 20px 0px; /* Adjust margin as needed */
 }
 
-
-.hidden-important {
-    display: none !important;
+#funeral-field-tabs{
+    background-color: white !important;
 }
 
-.show-important {
-    display: flex !important;
+#funeral-field-tabs .nav-link{
+    background-color: white !important;
+    border: 1px solid rgba(215, 210, 210, 0.533) !important;
+   font-size: 18px;
+}
+
+#funeral-field-tabs .nav-link.active{
+    border: 1px solid #2a3da3 !important;
+}
+
+.live-link{
+    border: 1px solid rgba(215, 210, 210, 0.533) !important;
+    font-size: 18px;
+    padding: 15px;
 }
