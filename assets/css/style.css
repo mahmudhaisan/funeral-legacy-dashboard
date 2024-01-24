@@ -31,3 +31,61 @@
     font-size: 18px;
     padding: 15px;
 }
+
+
+/* Myaccount */
+
+.woocommerce-MyAccount-navigation{
+    width: 100% !important;
+    /* margin-top: 30px !important; */
+}
+.woocommerce-MyAccount-navigation ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin:0;
+   
+}
+
+.woocommerce-MyAccount-navigation a {
+    text-decoration: none !important;
+    color: #ffffff !important; 
+   
+}
+
+.woocommerce-MyAccount-navigation li {
+    margin: 0 10px; /* Adjust the margin as needed for spacing */
+    text-decoration: none !important;
+    font-size: 18px;
+    padding: 10px; /* Add padding for better clickable area */
+    color: #ffffff !important; /* Text color */
+    background-color: #2a3da3 !important; 
+}
+
+.woocommerce-MyAccount-navigation-link.is-active {
+    background: rgb(34, 31, 124) !important;
+}
+.woocommerce-MyAccount-navigation li:hover {
+    color: #ffffff;
+    background-color: #292e48; /* Hover background color */
+}
+
+
+.woocommerce-account .woocommerce-MyAccount-content{
+    margin-top: 50px !important;
+
+    width: 100% !important;
+}
+
+
+/* hide page entry title */
+.entry-title{
+    display: none !important;
+}
+
+
+body .woocommerce-MyAccount-navigation-link.is-active a{
+    background-color: transparent !important;
+}

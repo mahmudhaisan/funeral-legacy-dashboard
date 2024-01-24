@@ -53,6 +53,7 @@ function flw_custom_enqueue_assets()
 
 include_once FLW_PLUGINS_PATH . '/includes/admin/admin.php';
 include_once FLW_PLUGINS_PATH . '/includes/frontend/frontend.php';
+include_once FLW_PLUGINS_PATH . '/functions.php';
 
 if (is_admin() && defined('DOING_AJAX') && DOING_AJAX) {
     include_once FLW_PLUGINS_PATH . '/ajax.php';
