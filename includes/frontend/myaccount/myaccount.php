@@ -50,28 +50,16 @@ function flw_add_custom_menu_items($items)
 {
     // Check if the current user has the 'local_admin' role
     $user = wp_get_current_user();
-
-
-
     $current_user_id = get_current_user_id();
     $post_type = 'legacy-funeral';
 
     $user_post_count = intval(count_user_posts($current_user_id, $post_type, true));
 
-
-
-
     // if (in_array('local_admin', $user->roles)) {
     // Create an array for the first new menu item - Add Funeral Personality
-    $new_item_funeral_list = array('funeral-list' => __('Funeral List', 'your-text-domain'));
+    $new_item_funeral_list = array('legacy-dashboard' => __('Legacy Dashboard', 'your-text-domain'));
 
     $items = array_slice($items, 0, -1, true) +  $new_item_funeral_list + array_slice($items, -1, null, true);
-
-
-
-    $new_item_funeral = array('add-funeral-personality' => __('Add Funeral Personality', 'your-text-domain'));
-    // Insert the first new menu item before the 'Log out' item
-    $items = array_slice($items, 0, -1, true) + $new_item_funeral + array_slice($items, -1, null, true);
 
 
     // Create an array for the second new menu item - Add Admin Assistant
@@ -93,59 +81,63 @@ function add_custom_endpoints()
 {
 
 
-    add_rewrite_endpoint('funeral-list', EP_PAGES);
-    add_rewrite_endpoint('add-funeral-personality', EP_PAGES);
+    add_rewrite_endpoint('legacy-dashboard', EP_PAGES);
     add_rewrite_endpoint('add-admin-assistant', EP_PAGES);
 }
 add_action('init', 'add_custom_endpoints');
 
 
 
-/**
- * Add content to the new endpoints
- */
-function add_funeral_personality_content()
-{
-
-
-    require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/handle-add-new-personality.php';
-    require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/add-new-funeral-personality.php';
-}
-
-
-
-add_action('woocommerce_account_add-funeral-personality_endpoint', 'add_funeral_personality_content');
-
-
-
 function funeral_personality_list()
 {
-    require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/handle-funeral-list.php';
 
     if (isset($_GET['trashed-funeral-dashboard'])) {
-        require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/funeral-list-trashed.php';
-    } else {
-        if (isset($_GET['published-funeral-dashboard']) && isset($_GET['post_id']) && isset($_GET['action'])) {
-            switch ($_GET['action']) {
-                case 'delete':
-                    require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/funeral-list-published.php';
-                    break;
-                case 'edit':
-                    require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/edit-funeral-personality.php';
-                    break;
-                // Add more cases as needed
-                default:
-                    // Default action if none of the specified cases match
-                    break;
-            }
-        } else {
-            require_once FLW_PLUGINS_PATH . 'templates/views/myaccount/funeral-list-published.php';
+        require_once FLW_PLUGINS_PATH . 'views/myaccount/legacy-dashboard-trashed.php';
+    } elseif (isset($_GET['published-funeral-dashboard']) && isset($_GET['action'])) {
+        switch ($_GET['action']) {
+            case 'delete':
+                if (isset($_GET['post_id'])) {
+                    require_once FLW_PLUGINS_PATH . 'views/myaccount/legacy-dashboard-published.php';
+                } else {
+                    // Handle the case where 'post_id' is not set for editing
+                    echo 'Invalid request for trashing. Post ID is missing.';
+                }
+                break;
+            case 'edit':
+                // Assuming you have 'post_id' set when editing an existing record
+                if (isset($_GET['post_id'])) {
+                    require_once FLW_PLUGINS_PATH . 'views/myaccount/edit-legacy-dashboard.php';
+                } else {
+                    // Handle the case where 'post_id' is not set for editing
+                    echo 'Invalid request for editing. Post ID is missing.';
+                }
+                break;
+            case 'add':
+                require_once FLW_PLUGINS_PATH . 'views/myaccount/add-legacy-dashboard.php';
+                break;
+
+            case 'add-admin-assistant':
+                require_once FLW_PLUGINS_PATH . 'views/myaccount/add-admin-assistant.php';
+                break;
+
+            case 'all-admin-assistants':
+                require_once FLW_PLUGINS_PATH . 'views/myaccount/all-admin-assistants.php';
+                break;
+
+
+            default:
+                // If action is none of 'delete', 'edit', nor 'add', fall back to the default view
+                require_once FLW_PLUGINS_PATH . 'views/myaccount/legacy-dashboard-published.php';
+                break;
         }
+    } else {
+        require_once FLW_PLUGINS_PATH . 'views/myaccount/legacy-dashboard-published.php';
     }
 }
 
 
-add_action('woocommerce_account_funeral-list_endpoint', 'funeral_personality_list');
+
+add_action('woocommerce_account_legacy-dashboard_endpoint', 'funeral_personality_list');
 
 
 
