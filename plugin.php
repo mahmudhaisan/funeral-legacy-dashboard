@@ -29,14 +29,18 @@ add_action('wp_enqueue_scripts', 'flw_custom_enqueue_assets');
 // Enqueue CSS and JavaScript
 function flw_custom_enqueue_assets()
 {
+
+  
+
+    // styles
     wp_enqueue_style('bootstrap-min', plugin_dir_url(__FILE__) . 'assets/css/bootstrap.min.css');
     wp_enqueue_style('fontawesome-css-min', plugin_dir_url(__FILE__) . 'assets/css/fontawesome.min.css');
     wp_enqueue_style('mark-calender-style', plugin_dir_url(__FILE__) . 'assets/css/mark-your-calendar.css');
-   wp_enqueue_style('jquery-ui-css', plugin_dir_url(__FILE__) . 'assets/css/jquery-ui.css');
+    wp_enqueue_style('jquery-ui-css', plugin_dir_url(__FILE__) . 'assets/css/jquery-ui.css');
     wp_enqueue_style('style-css', plugin_dir_url(__FILE__) . 'assets/css/style.css');
 
 
-    
+    // scripts
     wp_enqueue_script('bootstrap-min', plugin_dir_url(__FILE__) . 'assets/js/bootstrap.min.js', array('jquery'), '1.0.0', true);
     wp_enqueue_script('script-animate-js', plugin_dir_url(__FILE__) . 'assets/js/jquery-animate-number.js', array('jquery'), '1.0.0', true);
     wp_enqueue_script('mark-calender-js', plugin_dir_url(__FILE__) . 'assets/js/mark-your-calendar.js', array('jquery'), '1.0.0', true);
@@ -58,6 +62,3 @@ include_once FLW_PLUGINS_PATH . '/functions.php';
 if (is_admin() && defined('DOING_AJAX') && DOING_AJAX) {
     include_once FLW_PLUGINS_PATH . '/ajax.php';
 }
-
-
-

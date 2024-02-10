@@ -1,5 +1,6 @@
 <?php 
 
+echo '<div class="container">';
 
 $user_id = get_current_user_id();
 
@@ -10,8 +11,6 @@ if (isset($_GET['trashed-funeral-dashboard']) && isset($_GET['post_id']) && isse
     $post_id = isset($_GET['post_id']) ? $_GET['post_id'] : '';
     $post_action = isset($_GET['action']) ? $_GET['action'] : '';
     $post_type = 'legacy-funeral';
-
-
 
     // Check if the current user has any published posts in the specified post type
     $user_post_count = count_user_posts($user_id, $post_type, true);
@@ -42,6 +41,7 @@ if (isset($_GET['trashed-funeral-dashboard']) && isset($_GET['post_id']) && isse
                         $result_publish = wp_update_post($updated_post);
 
                         if ($result_publish !== 0) {
+                            
                             echo '<div class="alert alert-success" role="alert">Post restored and published successfully.</div>';
                         } else {
                             echo '<div class="alert alert-danger" role="alert">Error updating post status to published.</div>';
@@ -61,6 +61,7 @@ if (isset($_GET['trashed-funeral-dashboard']) && isset($_GET['post_id']) && isse
             echo '<div class="alert alert-danger" role="alert">Error: Only one post is allowed.</div>';
         }
     }
+   
 
     // delete trash posts
 
@@ -96,7 +97,7 @@ $my_account_url = wc_get_account_endpoint_url('');
 // Append 'funeral-list' endpoint to My Account URL
 $funeral_list_url = trailingslashit($my_account_url) . 'legacy-dashboard';
 
-echo '<div class=" mt-4">';
+echo '<div class="container mt-4">';
 echo '<div class="d-flex justify-content-between">';
 echo '<h3 class="mb-4">Trashed List</h3>';
 
@@ -106,11 +107,7 @@ echo '<p class="mb-4 d-flex"><a class="bg-primary text-white p-2 me-2 text-decor
 echo '</div>';
 echo '</div>';
 
-
-
 $current_user_id = get_current_user_id();
-
-
 // Check if 'legacy-funeral' post type exists
 if (post_type_exists('legacy-funeral')) {
     // Display the list of 'legacy-funeral' posts
@@ -119,11 +116,10 @@ if (post_type_exists('legacy-funeral')) {
         'numberposts' => -1,
         'post_status' => 'trash',
         'author' => $current_user_id
-
     ));
 
     if ($funeral_posts) {
-        echo '<ul class="list-group" p-0>';
+        echo '<ul class="list-group p-0" >';
         foreach ($funeral_posts as $post) {
             echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
             echo '<span>' . esc_html($post->post_title) . '</span>';
@@ -136,11 +132,11 @@ if (post_type_exists('legacy-funeral')) {
         echo '</ul>';
     } else {
         echo '<p class="mb-4">Currently Trash Is Empty. You can check your restored person here. </p>'; 
-      
-
     }
 } else {
     echo '<p>The "legacy-funeral" post type does not exist.</p>';
 }
+
+echo '</div>';
 
 echo '</div>';

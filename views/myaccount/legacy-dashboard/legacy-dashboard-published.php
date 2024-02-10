@@ -9,19 +9,12 @@ if (isset($_GET['published-funeral-dashboard']) && isset($_GET['post_id']) && is
     $post_action = isset($_GET['action']) ? $_GET['action'] : '';
     $post_type = 'legacy-funeral';
 
-
-    
-
-
     // Check if the current user has any published posts in the specified post type
     $user_post_count = count_user_posts($user_id , $post_type, true);
 
-
-
-
-    // delete trash posts
-
+   
     if (!empty($post_id) && $post_action == 'delete') {
+        echo '<div class="container">';
         // Check if the post ID exists
         $post = get_post($post_id);
 
@@ -32,7 +25,7 @@ if (isset($_GET['published-funeral-dashboard']) && isset($_GET['post_id']) && is
             if ($result !== false) {
                 echo '<div class="alert alert-success" role="alert">Post trashed successfully.</div>';
             } else {
-                echo '<div class="alert alert-danger" role="alert">Error trahing post.</div>';
+                echo '<div class="alert alert-danger" role="alert">Error trashing dashboard. Please try again</div>';
             }
         } else {
             // Post ID does not exist
@@ -44,7 +37,9 @@ if (isset($_GET['published-funeral-dashboard']) && isset($_GET['post_id']) && is
     
         echo 'edit';
     }
+    echo '</div>';
 }
+
 
 
 
@@ -54,7 +49,7 @@ $my_account_url = wc_get_account_endpoint_url('');
 // Append 'funeral-list' endpoint to My Account URL
 $funeral_list_url = trailingslashit($my_account_url) . 'add-funeral-personality';
 
-;
+
 
 $current_user_id = get_current_user_id();
 $post_type = 'legacy-funeral';
@@ -67,7 +62,7 @@ if($user_post_count  > 0){
     $hide_item = '';
     
 }
-echo '<div class="mt-4">';
+echo '<div class="container mt-4">';
 echo '<div class="d-flex justify-content-between">';
 echo '<h3 class="mb-4">Legacy Dashboard</h3>';
 echo '<p class="d-inline-block ml-2 mb-4"><a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?published-funeral-dashboard&action=add-admin-assistant">Add Admin Assistant</a><a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?published-funeral-dashboard&action=all-admin-assistants">All Admin Assistants</a><a class="bg-primary me-2 text-white p-2 text-decoration-none ' . esc_attr($hide_item) . '" href="?published-funeral-dashboard&action=add">Add New Dashboard</a><a class="bg-primary text-white p-2 text-decoration-none" href="?trashed-funeral-dashboard">Trashed</a></p>';
@@ -87,11 +82,19 @@ if (post_type_exists('legacy-funeral')) {
 
 
     if ($funeral_posts) {
-        echo '<ul class="list-group">';
-        foreach ($funeral_posts as $post) {
-            echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+        echo '<ul class="list-group p-0">';
+        foreach ($funeral_posts as $post) { 
+
+            $post_id = $post->ID;
+
+            // Get the permalink for the post
+            $post_permalink = get_permalink($post_id);
+
+
+            echo '<li class="list-group-item  d-flex justify-content-between align-items-center">';
             echo '<span>' . esc_html($post->post_title) . '</span>';
             echo '<div class="btn-group">';
+            echo '<a href="'.esc_url($post_permalink).'" class="btn btn-primary btn-sm me-2">View</a>';
             echo '<a href="?published-funeral-dashboard&post_id=' . $post->ID . '&action=edit" class="btn btn-success btn-sm me-2">Edit</a>';
             echo '<a href="?published-funeral-dashboard&post_id=' . $post->ID . '&action=delete" class="btn btn-danger btn-sm">Delete</a>';
             echo '</div>';
