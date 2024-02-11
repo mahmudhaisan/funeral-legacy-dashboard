@@ -15,12 +15,66 @@ add_action('admin_menu', 'funeral_dashboard_menu_page');
 // Render the custom dashboard page
 function render_funeral_dashboard_page()
 {
-?>
+    ?>
     <div class="wrap">
         <h2>Funeral Dashboard</h2>
+        <form method="post" action="options.php">
+            <?php settings_fields('funeral_dashboard_settings_group'); ?>
+            <?php do_settings_sections('funeral_dashboard_settings_page'); ?>
+            <?php submit_button(); ?>
+        </form>
     </div>
-<?php
+    <?php
 }
+
+// Register settings
+function register_funeral_dashboard_settings()
+{
+    register_setting('funeral_dashboard_settings_group', 'legacy_gallery_per_page');
+    register_setting('funeral_dashboard_settings_group', 'legacy_wall_per_page');
+    register_setting('funeral_dashboard_settings_group', 'legacy_video_per_page');
+}
+
+// Add input fields to the dashboard page
+function add_funeral_dashboard_fields()
+{
+    add_settings_section('funeral_dashboard_section', 'Legacy Settings', 'funeral_dashboard_section_callback', 'funeral_dashboard_settings_page');
+
+    add_settings_field('legacy_gallery_per_page', 'Legacy Gallery Per Page', 'legacy_gallery_per_page_callback', 'funeral_dashboard_settings_page', 'funeral_dashboard_section');
+    add_settings_field('legacy_wall_per_page', 'Legacy Wall Per Page', 'legacy_wall_per_page_callback', 'funeral_dashboard_settings_page', 'funeral_dashboard_section');
+    add_settings_field('legacy_video_per_page', 'Legacy Video Per Page', 'legacy_video_per_page_callback', 'funeral_dashboard_settings_page', 'funeral_dashboard_section');
+}
+
+// Section callback
+function funeral_dashboard_section_callback()
+{
+    echo '<p>Configure the number of items per page for legacy gallery, legacy wall, and legacy video.</p>';
+}
+
+// Input fields callback
+function legacy_gallery_per_page_callback()
+{
+    $legacy_gallery_per_page = get_option('legacy_gallery_per_page', 10);
+    echo '<input type="number" name="legacy_gallery_per_page" value="' . esc_attr($legacy_gallery_per_page) . '" />';
+}
+
+function legacy_wall_per_page_callback()
+{
+    $legacy_wall_per_page = get_option('legacy_wall_per_page', 10);
+    echo '<input type="number" name="legacy_wall_per_page" value="' . esc_attr($legacy_wall_per_page) . '" />';
+}
+
+function legacy_video_per_page_callback()
+{
+    $legacy_video_per_page = get_option('legacy_video_per_page', 10);
+    echo '<input type="number" name="legacy_video_per_page" value="' . esc_attr($legacy_video_per_page) . '" />';
+}
+
+add_action('admin_init', 'register_funeral_dashboard_settings');
+add_action('admin_menu', 'add_funeral_dashboard_fields');
+
+
+
 
 
 // Add custom post type: Legacy Funeral

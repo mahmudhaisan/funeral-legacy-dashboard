@@ -1,5 +1,7 @@
 <?php
 
+$legacy_gallery_per_page = get_option('legacy_gallery_per_page', 3);
+
 // Get the current post ID
 $post_id = get_the_ID();
 
@@ -18,7 +20,7 @@ print_r($published_gallery_images);
     <div class="row g-4 legacy-gallery">
         <?php
         // Display only the first 2 images initially
-        $num_initial_images = 1;
+        $num_initial_images = $legacy_gallery_per_page;
         $displayed_images = 0;
 
         if ($published_gallery_images) {
@@ -64,7 +66,7 @@ print_r($published_gallery_images);
 <script>
     jQuery(document).ready(function($) {
         var offset = <?php echo $num_initial_images; ?>; // Initial offset to load more images
-        var perPage = 1; // Number of images to load per request
+        var perPage = <?php echo $legacy_gallery_per_page; ?>; // Number of images to load per request
 
         $('#load-more').on('click', function() {
             var postId = <?php echo $post_id; ?>;

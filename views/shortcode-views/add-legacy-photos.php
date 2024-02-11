@@ -22,22 +22,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_legacy_form'])
         // You can save $gallery_image_ids to a database or perform other actions.
     }
 
+    print_r($gallery_image_ids);
+
     // Create a new post in the "legacy_photos" post type
     $post_data = array(
-        'post_title'   => $name . "'s Legacy Photo", // Adjust the title as needed
+        'post_title'   => $name , // Adjust the title as needed
         'post_content' => $writeShort,
         'post_status'  => 'publish',
         'post_author'  => get_current_user_id(), // Set the author as the current logged-in user
         'post_type'    => 'legacy-photos',
-        // Add additional post meta as needed
-        'meta_input'   => array(
-            'legacy_name' => $legacyName,
-            'legacy_email' => $email,
-            // Add more meta fields as needed
-        ),
+        
     );
 
     $new_post_id = wp_insert_post($post_data);
+
+
+    // update_field('_legacy_submitted_user_name', $name, $new_post_id );
+    update_field('submitted_user_email', $email, $new_post_id );
+    update_field('submitted_user_short', $writeShort, $new_post_id );
 
     // Attach featured image to the post
     if (!is_wp_error($new_post_id) && !empty($featured_image_id)) {
@@ -49,10 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_legacy_form'])
         add_post_meta($new_post_id, 'submitted_user_gallery', $gallery_image_ids);
     }
 
-
     $post_id_referred = add_post_meta($new_post_id, 'legacy_dashboard_id', $post_id);
 
     $submitted_galleries = get_post_meta($new_post_id, 'submitted_user_gallery', true);
+
+
 
     // Convert the comma-separated string to an array
     $existing_pending_gallery_images = get_post_meta($post_id, 'pending_galleries_images', true);

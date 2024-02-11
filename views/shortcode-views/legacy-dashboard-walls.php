@@ -1,4 +1,7 @@
 <?php
+    $legacy_wall_per_page = get_option('legacy_wall_per_page', 3);
+
+
 
 // Get the current post ID
 $post_id = get_the_ID();
@@ -13,7 +16,7 @@ $args = array(
             'compare' => '=',
         ),
     ),
-    'posts_per_page' => 3, // Initially load 2 videos
+    'posts_per_page' => $legacy_wall_per_page, // Initially load 2 videos
 
 );
 

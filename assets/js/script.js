@@ -4,7 +4,7 @@ jQuery(document).ready(function ($) {
 
     $('#load-more-videos').on('click', function () {
         var page = $(this).data('page');
-        var postsPerPage = 3; // Number of posts to load per page
+        var postsPerPage = funeral_legacy_wall.legacy_video_per_page; // Number of posts to load per page
         var offset = (page ) * postsPerPage; // Calculate offset
         var ajaxurl = funeral_legacy_wall.ajaxurl;
         var post_id = $('#legacy-video-id').val();
@@ -37,7 +37,7 @@ jQuery(document).ready(function ($) {
     $('#load-more-walls').on('click', function () {
        
         var page = $(this).data('page');
-        var postsPerPage = 3; // Number of posts to load per page
+        var postsPerPage = funeral_legacy_wall.legacy_wall_per_page; // Number of posts to load per page
         var offset = (page ) * postsPerPage; // Calculate offset
         var ajaxurl = funeral_legacy_wall.ajaxurl;
         var post_id = $('#legacy-wall-id').val();

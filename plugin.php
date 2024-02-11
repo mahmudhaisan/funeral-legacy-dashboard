@@ -30,6 +30,11 @@ add_action('wp_enqueue_scripts', 'flw_custom_enqueue_assets');
 function flw_custom_enqueue_assets()
 {
 
+    
+    $legacy_gallery_per_page = get_option('legacy_gallery_per_page', 3);
+    $legacy_wall_per_page = get_option('legacy_wall_per_page', 3);
+    $legacy_video_per_page = get_option('legacy_video_per_page', 3);
+    
   
 
     // styles
@@ -51,6 +56,9 @@ function flw_custom_enqueue_assets()
         'funeral_legacy_wall',
         array(
             'ajaxurl' => admin_url('admin-ajax.php'),
+            'legacy_gallery_per_page' => $legacy_gallery_per_page,
+            'legacy_wall_per_page' => $legacy_wall_per_page,
+            'legacy_video_per_page' => $legacy_video_per_page,
         )
     );
 }

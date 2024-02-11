@@ -188,7 +188,7 @@ function handleLegacyWallFormSubmission()
 
     // add post meta
     add_post_meta($new_wall_post_id, 'legacy_dashboard_id', $post_id);
-   
+
     // Update ACF fields
     update_field('legacy_dashboard_person_name', $legacy_dashboard_person_name, $new_wall_post_id);
     update_field('legacy_wall_submitted_user_name', $legacy_wall_submitted_user_name, $new_wall_post_id);
@@ -230,7 +230,7 @@ function handleLegacyVideoFormSubmission()
 
     // add post meta
     add_post_meta($new_video_post_id, 'legacy_dashboard_id', $post_id);
-   
+
     // Update ACF fields
     update_field('legacy_video_person_name', $legacy_dashboard_person_name, $new_video_post_id);
     update_field('legacy_video_submitted_user_name', $legacy_wall_submitted_user_name, $new_video_post_id);
@@ -249,21 +249,22 @@ function handleLegacyVideoFormSubmission()
 
 
 
- // Helper function to extract YouTube video ID
- function get_youtube_video_id($url)
- {
-     $video_id = '';
-     $pattern = '#(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})#';
-     if (preg_match($pattern, $url, $matches)) {
-         $video_id = $matches[1];
-     }
-     return $video_id;
- }
+// Helper function to extract YouTube video ID
+function get_youtube_video_id($url)
+{
+    $video_id = '';
+    $pattern = '#(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})#';
+    if (preg_match($pattern, $url, $matches)) {
+        $video_id = $matches[1];
+    }
+    return $video_id;
+}
 
 
 
 
-function publishMarkedImages($marked_images) {
+function publishMarkedImages($marked_images)
+{
     // Logic to publish marked images
     foreach ($marked_images as $image_id) {
         // Implement logic to publish image with ID $image_id
@@ -272,17 +273,105 @@ function publishMarkedImages($marked_images) {
     // Redirect or display success message after publishing
 }
 
-function trashMarkedImages($marked_images) {
+function trashMarkedImages($marked_images)
+{
 
 
 
     print_r($marked_images);
 
-    
+
     // Logic to trash marked images
     foreach ($marked_images as $image_id) {
         // Implement logic to trash image with ID $image_id
         // Example: update_post_meta($post_id, 'trashed_images', $image_id);
     }
     // Redirect or display success message after trashing
+}
+
+
+
+
+function check_all_exist_in_string($marked_images, $pending_galleries_images)
+{
+    // Convert the string to an array for easier comparison
+    $pending_images_array = explode(',', $pending_galleries_images);
+
+    // Check if all values in $marked_images exist in $pending_images_array
+    foreach ($marked_images as $value) {
+        if (!in_array($value, $pending_images_array)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
+
+/**
+ * Retrieve post data for marked images
+ *
+ * @param array $marked_images An array containing the marked image IDs
+ * @param object $wpdb The WordPress database object
+ * @return array An array containing post data associated with the marked images
+ */
+function get_post_data_for_marked_images($marked_images, $subject, $message_status)
+{
+
+    global $wpdb;
+    $post_data = array();
+
+    // Loop through each marked image
+    foreach ($marked_images as $meta_value_to_search) {
+        // Prepare the SQL query to retrieve post IDs based on the meta value
+        $query = $wpdb->prepare("
+            SELECT DISTINCT post_id
+            FROM $wpdb->postmeta
+            WHERE (`meta_key` = 'submitted_user_gallery' OR `meta_value` = 'submitted_user_gallery')
+            AND `meta_value` LIKE %s
+        ", '%' . $meta_value_to_search . '%');
+
+        // Execute the query
+        $results = $wpdb->get_results($query);
+
+        // Extract post IDs from the results and add them to the post_data array
+        foreach ($results as $result) {
+            // Get data
+            $post_title = get_the_title($result->post_id);
+            $legacy_submitted_user_email = get_post_meta($result->post_id, 'submitted_user_email', true);
+
+            // Check if legacy_submitted_user_email is not empty and is a valid email address
+            if (!empty($legacy_submitted_user_email) && filter_var($legacy_submitted_user_email, FILTER_VALIDATE_EMAIL)) {
+                // Add post ID along with associated meta values to the post_data array
+                $post_data[$result->post_id] = array(
+                    'submitted_user_name' => $post_title,
+                    'submitted_user_email' => $legacy_submitted_user_email
+                );
+            }
+        }
+    }
+
+
+    // Send emails to users
+    foreach ($post_data as $post_id => $meta_values) {
+
+        $to = $meta_values['submitted_user_email'];
+        // print_r($to);
+        $subject = $subject ;
+        $message = 'Dear ' . $meta_values['submitted_user_name'] . ',<br><br>';
+        $message .= $message_status . "<br><br>";
+        $message .= 'Thank you for your submission.<br><br>';
+        // Additional message content or formatting can be added here
+
+        // Set headers for HTML email
+        $headers[] = 'Content-Type: text/html; charset=UTF-8';
+        $headers[] = 'From: Wordpress<wordpress@mysite.com>';
+
+        // Send email
+        $email_to_recipients =  wp_mail($to, $subject, $message, $headers);
+    }
+
+    // return ($post_data);
 }

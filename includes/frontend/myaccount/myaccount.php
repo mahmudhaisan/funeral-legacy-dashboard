@@ -117,7 +117,7 @@ function funeral_personality_list()
             case 'edit':
                 // Assuming you have 'post_id' set when editing an existing record
                 if (isset($_GET['post_id'])) {
-                    require_once FLW_PLUGINS_PATH . 'views/myaccount/edit-legacy-dashboard.php';
+                    require_once FLW_PLUGINS_PATH . 'views/myaccount/legacy-dashboard/edit-legacy-dashboard.php';
                 } else {
                     // Handle the case where 'post_id' is not set for editing
                     echo 'Invalid request for editing. Post ID is missing.';
@@ -170,7 +170,7 @@ function add_legacy_gallery_content()
     echo '<a class="bg-primary me-2 text-white p-2 text-decoration-none" href="' . $admin_assistant_url . '">Published Gallery</a>';
 
 
-    echo '<a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?gallery-view=pending">Pending Gallery</a>';
+    echo '<a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?gallery-view=trash">Trash Gallery</a>';
     echo '</p>';
     echo '</div>';
 
@@ -212,7 +212,7 @@ function add_legacy_gallery_content()
     $gallery_view = isset($_GET['gallery-view']) ? sanitize_text_field($_GET['gallery-view']) : '';
 
     switch ($gallery_view) {
-        case 'pending':
+        case 'trash':
             require_once FLW_PLUGINS_PATH . 'views/myaccount/legacy-gallery/user-submitted-gallery-pending.php';
             break;
         default:

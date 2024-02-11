@@ -5,9 +5,35 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["trash_marked_images"])) {
+
+
         $published_galleries_images = get_post_meta($post_id, 'legacy_gallery_published', true);
         $pending_galleries_images = get_post_meta($post_id, 'pending_galleries_images', true);
+
         $marked_images_ids_arr = isset($_POST['marked_images']) ? $_POST['marked_images'] : array();
+
+
+        // print_r($marked_images_ids_arr);
+
+
+        $check_if_marked_images_is_in_pending_meta = (check_all_exist_in_string($marked_images_ids_arr, $published_galleries_images));
+
+
+        // print_r($check_if_marked_images_is_in_pending_meta);
+
+        if ($check_if_marked_images_is_in_pending_meta == false) {
+
+            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Images already in trash. <a href="' . $_SERVER['REQUEST_URI'] . '">Refresh Page</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             </div>';
+
+            return;
+        }
+
+
+
+
 
         //published galleries
         $original_published_array = !empty($published_galleries_images) ? explode(',', $published_galleries_images) : [];
@@ -28,14 +54,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-        // Check if new_pending_galleries_images is not empty and display success message
-        if (!empty($marked_images_ids_arr)) {
-            // Add Bootstrap alert for successful deletion
-            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+        $subject = 'Your gallery is denied';
+        $message_status = 'Your gallery is denied. Upload other galleries';
+
+
+        get_post_data_for_marked_images($marked_images_ids_arr, $subject, $message_status);
+        
+
+        // Add Bootstrap alert for successful deletion
+        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
                 Gallery images published successfully!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>';
-        }
     }
 }
 
@@ -67,7 +97,7 @@ if ($published_galleries_images) {
             }
         }
         echo '<div class="center-button text-center mt-5">';
-        echo '<button type="submit" name="trash_marked_images" class="btn btn-primary">Move To Pending List</button>';
+        echo '<button type="submit" name="trash_marked_images" class="btn btn-primary">Move To Trash List</button>';
         echo '</div>';
         echo '</div>';
         echo '</form>';
