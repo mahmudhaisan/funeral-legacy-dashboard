@@ -5,6 +5,8 @@ $legacy_video_per_page = get_option('legacy_video_per_page', 3);
 // Get the current post ID
 $post_id = get_the_ID();
 
+
+
 $args = array(
     'post_type'      => 'legacy-videos',
     'post_status'    => 'publish',
@@ -20,6 +22,10 @@ $args = array(
 );
 
 $published_legacy_video_posts = new WP_Query($args);
+
+
+
+
 
 ?>
 
@@ -61,13 +67,18 @@ $published_legacy_video_posts = new WP_Query($args);
 
         </div>
 
-        <!-- Load More Button -->
-        <div class="center-button text-center mt-3">
+       
+    <?php
+    else :
+        echo 'No Videos found.';
+    endif;
+    ?>
+     <!-- Load More Button -->
+     <div class="center-button text-center mt-3">
                 <?php
                 // Get the current URL and append the necessary parameters for adding a new photo
                 $current_url = home_url();
                 $new_url = $current_url . '/upload-legacy-gallery/';
-                $post_id = get_the_ID();
                 ?>
             
             <button id="load-more-videos" class="btn btn-primary text-white mb-3" data-page="1">Load More</button>
@@ -75,11 +86,6 @@ $published_legacy_video_posts = new WP_Query($args);
 
         </div>
 
-    <?php
-    else :
-        echo 'No Videos found.';
-    endif;
-    ?>
 
     <?php wp_reset_postdata(); ?>
 </div>

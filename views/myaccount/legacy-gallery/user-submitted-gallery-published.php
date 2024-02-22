@@ -4,36 +4,25 @@
 // Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (isset($_POST["trash_marked_images"])) {
-
+    if (isset($_POST["pending_marked_images"])) {
 
         $published_galleries_images = get_post_meta($post_id, 'legacy_gallery_published', true);
         $pending_galleries_images = get_post_meta($post_id, 'pending_galleries_images', true);
 
         $marked_images_ids_arr = isset($_POST['marked_images']) ? $_POST['marked_images'] : array();
-
-
-        // print_r($marked_images_ids_arr);
-
-
         $check_if_marked_images_is_in_pending_meta = (check_all_exist_in_string($marked_images_ids_arr, $published_galleries_images));
-
 
         // print_r($check_if_marked_images_is_in_pending_meta);
 
         if ($check_if_marked_images_is_in_pending_meta == false) {
 
             echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-            Images already in trash. <a href="' . $_SERVER['REQUEST_URI'] . '">Refresh Page</a>
+            Images already in Pending List. <a href="' . $_SERVER['REQUEST_URI'] . '">Refresh Page</a>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
              </div>';
 
             return;
         }
-
-
-
-
 
         //published galleries
         $original_published_array = !empty($published_galleries_images) ? explode(',', $published_galleries_images) : [];
@@ -46,9 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_merged_pending_array = array_merge($new_pending_array, $marked_images_ids_arr);
         // Remove any leading comma from the string
         $new_comma_separated_pending_galleries_ids = ltrim(implode(',', $new_merged_pending_array), ',');
-
-
-
+        
         update_post_meta($post_id, 'legacy_gallery_published', $new_comma_separated_published_galleries_ids);
         update_post_meta($post_id, 'pending_galleries_images', $new_comma_separated_pending_galleries_ids);
 
@@ -63,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Add Bootstrap alert for successful deletion
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                Gallery images published successfully!
+                Gallery images moved to pending list!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>';
     }
@@ -97,7 +84,7 @@ if ($published_galleries_images) {
             }
         }
         echo '<div class="center-button text-center mt-5">';
-        echo '<button type="submit" name="trash_marked_images" class="btn btn-primary">Move To Trash List</button>';
+        echo '<button type="submit" name="pending_marked_images" class="btn btn-primary">Move To Pending List</button>';
         echo '</div>';
         echo '</div>';
         echo '</form>';
@@ -106,5 +93,5 @@ if ($published_galleries_images) {
         echo 'No images found.';
     }
 } else {
-    echo 'No pending galleries images found.';
+    echo 'No published galleries images found.';
 }

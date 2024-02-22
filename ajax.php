@@ -140,16 +140,40 @@ function load_more_walls()
             echo '</div>';
             echo '</div>';
         }
-    
+
         $total_posts = $published_legacy_video_posts->found_posts;
         $remaining_posts = $total_posts - ($page * $posts_per_page);
-    
+
         // Send flag indicating whether there are more posts to load
         if ($remaining_posts <= 0) {
             echo '<div class="no-more-posts">No more posts to load.</div>';
         }
     }
-    
+
 
     wp_die();
+}
+
+
+
+add_action('wp_ajax_update_wall_post_content', 'update_post_content');
+function update_post_content()
+{
+    if (isset($_POST['post_id']) && isset($_POST['new_content'])) {
+        $post_id = intval($_POST['post_id']);
+        $new_content = wp_kses_post($_POST['new_content']);
+
+        // Update post content
+        wp_update_post(array(
+            'ID' => $post_id,
+            'post_content' => $new_content
+        ));
+
+        // Get updated post object
+        $post = get_post($post_id);
+
+        // Output updated post content
+        echo '<textarea class="form-control" id="postContent_' . $post_id . '" rows="8">' . esc_textarea($post->post_content) . '</textarea>';
+    }
+    wp_die(); // Always include this line to terminate the script
 }

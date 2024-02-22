@@ -56,9 +56,6 @@ function flw_legacy_dashboard_walls()
 
 
 
-
-
-
 add_shortcode('legacy_dashboard_videos', 'flw_legacy_dashboard_videos');
 
 function flw_legacy_dashboard_videos()

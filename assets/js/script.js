@@ -67,8 +67,36 @@ jQuery(document).ready(function ($) {
     });
 
 
+ 
+
 
 });
 
+function updatePost(postId) {
+    var newContent = document.getElementById('postContent_' + postId).value;
+
+
+    console.log(12);
+
+    // Perform AJAX request to update the post content
+    // Example AJAX request using jQuery
+    jQuery.post(
+        ajaxurl, // Assuming ajaxurl is defined properly in your WordPress environment
+        {
+            action: 'update_wall_post_content',
+            post_id: postId,
+            new_content: newContent
+        },
+        function(response) {
+            // Update the modal content with the updated post data
+            var modalBody = jQuery('#postModal_' + postId + ' .modal-body');
+            modalBody.html(response);
+            
+            // Show a success message
+            var successMsg = '<div class="alert alert-success mt-3" role="alert">Post content updated successfully!</div>';
+            modalBody.append(successMsg);
+        }
+    );
+}
 
 

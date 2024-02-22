@@ -2,10 +2,13 @@
 
 
 
+// Get My Account page URL
+$my_account_url = wc_get_account_endpoint_url('');
+$funeral_admin_assistant_list_url = trailingslashit($my_account_url) . 'legacy-admin-assistant';
+
 
 // Check if the user_id is set in the query string
 if (isset($_GET['user_id']) && is_numeric($_GET['user_id'])) {
-
     $user_id = absint($_GET['user_id']);
 
     // Check if the user exists
@@ -53,7 +56,10 @@ if (isset($_GET['user_id']) && is_numeric($_GET['user_id'])) {
         echo '<div class="container mt-4">';
         echo '<div class="d-flex justify-content-between">';
         echo '<h3 class="mb-4">Edit Admin Assistant</h3>';
-        echo '<p class="d-inline-block ml-2 mb-4"><a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?published-funeral-dashboard&action=add-admin-assistant">Add Admin Assistant</a><a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?published-funeral-dashboard&action=all-admin-assistants">All Admin Assistants</a><a class="bg-primary me-2 text-white p-2 text-decoration-none " href="?published-funeral-dashboard&action=add">Add New Dashboard</a><a class="bg-primary text-white p-2 text-decoration-none" href="?trashed-funeral-dashboard">Trashed</a></p>';
+        echo '<p class="d-inline-block ml-2 mb-4">';
+        echo '<a class="bg-primary me-2 text-white p-2 text-decoration-none" href="?published-funeral-dashboard&action=add-admin-assistant">Add Admin Assistant</a>';
+        echo '<a class="bg-primary me-2 text-white p-2 text-decoration-none" href="' . $funeral_admin_assistant_list_url . '">All Admin Assistants</a>';
+        echo '</p>';
         echo '</div>';
 
         // Display the user edit form

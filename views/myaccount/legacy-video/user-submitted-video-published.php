@@ -5,54 +5,86 @@
 // Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["move_to_pending"])) {
-
         $marked_videos = isset($_POST['marked_videos']) ? $_POST['marked_videos'] : array();
 
+        $unique_recipients = array();
+
         foreach ($marked_videos as $post_id) {
+
             // Get the current post status
             $current_status = get_post_status($post_id);
 
+
+
             // If the current status is not 'pending', update the post status to 'pending'
             if ($current_status !== 'pending') {
+
+
                 $post_data = array(
                     'ID' => $post_id,
                     'post_status' => 'pending'
                 );
                 wp_update_post($post_data);
 
+                // Retrieve recipient name and email
+                $recipient_name = get_post_meta($post_id, 'legacy_video_submitted_user_name', true);
+                $recipient_email = get_post_meta($post_id, 'legacy_video_submitted_user_email', true);
 
-                // Add Bootstrap alert for successful deletion
-                echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                Videos moved to pending list.!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>';
-            } else {
-                // Add Bootstrap alert for successful deletion
-                echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-              Failed to move. please try again
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>';
+                // Store unique recipient name and email combination
+                $unique_recipients[$recipient_email] = $recipient_name;
+
+               
             }
+        }
+
+
+
+
+        if (!empty($unique_recipients)) {
+
+             // Add Bootstrap alert for successful deletion
+             echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+             Videos moved to pending list.!
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+           </div>';
+
+            foreach ($unique_recipients as $recipient_email => $recipient_name) {
+
+                $email_subject = "Your legacy video submission";
+                $email_body = 'Your video submission has been denied. ';
+                // Send custom email
+                send_custom_email($recipient_name, $recipient_email, $email_subject, $email_body);
+            }
+        }else{
+
+            // Add Bootstrap alert for successful deletion
+            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Failed to move to pending list. please try again
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
+
         }
     }
 }
-
-
-
-
-
 
 
 $args = array(
     'post_status' => 'publish',
     'numberposts' => -1, // Adjust the number of posts to retrieve
     'post_type'   => 'legacy-videos',
-    'author'      => $parent_local_admin_id,
+    'meta_query'     => array(
+        array(
+            'key'     => 'legacy_dashboard_id',
+            'value'   => $legacy_dashboard_id ,
+            'compare' => '=',
+        ),
+    ),
 );
 
 $published_post_by_parent = get_posts($args);
 
-  
+
+
 // Check if there is a published post
 if (!$published_post_by_parent) {
 
